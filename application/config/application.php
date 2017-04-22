@@ -10,5 +10,11 @@ return [
     ],
     'namespaces' => [
         'Core' => 'core'
+    ],
+    'database' => [
+        'host' => 'localhost',
+        'database' => '',
+        'user' => '',
+        'pass' => ''
     ]
 ];
