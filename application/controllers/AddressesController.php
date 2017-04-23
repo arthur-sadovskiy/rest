@@ -33,7 +33,10 @@ class AddressesController extends Controller
     {
         $bodyParams = $this->_request->getBodyParams();
 
-        if ($this->_request->isIdSet()) {
+        if (!$this->_request->getIsJson()) {
+            $isValidInput = false;
+            $result = ['error' => 'Input data must be in JSON format'];
+        } elseif ($this->_request->isIdSet()) {
             $isValidInput = false;
             $result = ['error' => 'Method PATCH must be used for record update'];
 
@@ -77,7 +80,10 @@ class AddressesController extends Controller
         $isValidRequest = true;
         $bodyParams = $this->_request->getBodyParams();
 
-        if (!$this->_request->isIdSet()) {
+        if (!$this->_request->getIsJson()) {
+            $isValidRequest = false;
+            $result = ['error' => 'Input data must be in JSON format'];
+        } elseif (!$this->_request->isIdSet()) {
             $isValidRequest = false;
             $result = ['error' => 'AddressId must be provided for record update in url'];
         } elseif (empty($bodyParams)) {

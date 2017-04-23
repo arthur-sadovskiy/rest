@@ -12,6 +12,8 @@ class Request
 
     private $_bodyParams;
 
+    private $_isJson;
+
     public function __construct()
     {
         $urlParts = explode('/', $_SERVER['REQUEST_URI']);
@@ -26,7 +28,9 @@ class Request
             $this->_id = $urlParts[2];
         }
 
-        $this->_parseBodyParams();
+        if (in_array($this->_action, ['post', 'patch']) && $this->_isJsonInput()) {
+            $this->_parseBodyParams();
+        }
     }
 
     /**
@@ -46,6 +50,13 @@ class Request
         }
 
         $this->_bodyParams = $params;
+    }
+
+    private function _isJsonInput()
+    {
+        $this->_isJson = strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false;
+
+        return $this->_isJson;
     }
 
     public function getController()
@@ -81,5 +92,10 @@ class Request
     public function getBodyParams()
     {
         return $this->_bodyParams;
+    }
+
+    public function getIsJson()
+    {
+        return $this->_isJson;
     }
 }
