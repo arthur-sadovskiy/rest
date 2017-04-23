@@ -18,7 +18,7 @@ class Addresses
 
     public function getAddress($id)
     {
-        $sql = "SELECT * FROM address WHERE addressid = ?";
+        $sql = "SELECT * FROM {$this->_tableName} WHERE {$this->_keyField} = ?";
         $param = [$id];
 
         return $this->_adapter->fetchRow($sql, $param);
@@ -26,14 +26,14 @@ class Addresses
 
     public function getAllAddresses()
     {
-        $sql = "SELECT * FROM address";
+        $sql = "SELECT * FROM {$this->_tableName}";
 
         return $this->_adapter->fetchAll($sql);
     }
 
     public function add(array $data)
     {
-        $sql = "INSERT INTO address";
+        $sql = "INSERT INTO {$this->_tableName}";
 
         return $this->_adapter->insert($sql, $data);
     }
