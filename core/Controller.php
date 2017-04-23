@@ -21,4 +21,13 @@ class Controller
 
         return $view;
     }
+
+    public function getAvailableActions()
+    {
+        $data = ['error' => "For now only 'GET, POST, PATCH, DELETE' actions are supported"];
+        $view = new JsonView($data);
+        $view->setIsBadRequest(true);
+
+        return $view;
+    }
 }

@@ -41,6 +41,10 @@ class Application
         if (is_callable([$controller, $action])) {
             $view = $controller->$action();
             $view->render();
+        } else {
+            $action = 'getAvailableActions';
+            $view = $controller->$action();
+            $view->render();
         }
     }
 }
