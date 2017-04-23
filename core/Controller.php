@@ -21,18 +21,4 @@ class Controller
 
         return $view;
     }
-
-    public function helpGetAction()
-    {
-        $data = ['message' => 'Correct format for GET'];
-
-        return new JsonView($data);
-    }
-
-    public function helpPostAction()
-    {
-        $data = ['message' => 'Correct format for POST'];
-
-        return new JsonView($data);
-    }
 }
