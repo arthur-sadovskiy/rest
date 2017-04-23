@@ -116,11 +116,24 @@ class AddressesController extends Controller
 
     public function deleteAction()
     {
-        if ($this->_request->isIdSet()) {
+        $isValidRequest = true;
+        if (!$this->_request->isIdSet()) {
+            $isValidRequest = false;
+            $result = ['error' => 'AddressId must be provided for record delete in url'];
+        } else {
             $addressId = (int) $this->_request->getId();
-            $data = ['message' => (new Addresses())->delete($addressId)];
+            $isDeleted = (new Addresses())->delete($addressId);
+            $result = [];
+            if (!$isDeleted) {
+                $isValidRequest = false;
+                $result = ['error' => 'Wrong AddressId was provided for record delete in url'];
+            }
         }
 
-        return new JsonView($data);
+        $view = new JsonView($result);
+        if (!$isValidRequest) {
+            $view->setIsBadRequest(true);
+        }
+        return $view;
     }
 }
