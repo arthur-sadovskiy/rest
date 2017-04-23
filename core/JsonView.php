@@ -8,6 +8,8 @@ class JsonView
 
     private $_isNotFound = false;
 
+    private $_isBadRequest = false;
+
     public function __construct(array $data)
     {
         $this->_data = $data;
@@ -17,6 +19,8 @@ class JsonView
     {
         if ($this->_isNotFound) {
             header('HTTP/1.1 404 Not Found');
+        } elseif ($this->_isBadRequest) {
+            header('HTTP/1.1 400 Bad Request');
         }
 
         if (!empty($this->_data)) {
@@ -28,5 +32,10 @@ class JsonView
     public function setIsNotFound($isNotFound)
     {
         $this->_isNotFound = $isNotFound;
+    }
+
+    public function setIsBadRequest($isBadRequest)
+    {
+        $this->_isBadRequest = $isBadRequest;
     }
 }

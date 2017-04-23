@@ -33,6 +33,9 @@ class Application
 
         if (class_exists($controllerClass)) {
             $controller = new $controllerClass($request);
+        } else {
+            $controller = new Controller($request);
+            $action = 'getAvailableResources';
         }
 
         if (is_callable([$controller, $action])) {

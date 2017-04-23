@@ -13,6 +13,15 @@ class Controller
 
     /*** Block with helper methods ***/
 
+    public function getAvailableResources()
+    {
+        $data = ['error' => "For now only 'addresses' resource is supported"];
+        $view = new JsonView($data);
+        $view->setIsBadRequest(true);
+
+        return $view;
+    }
+
     public function helpGetAction()
     {
         $data = ['message' => 'Correct format for GET'];
