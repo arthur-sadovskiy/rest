@@ -40,6 +40,7 @@ class Request
         $bodyParams = json_decode($body);
         if ($bodyParams) {
             foreach ($bodyParams as $paramName => $paramValue) {
+                $paramName = strtolower($paramName);
                 $params[$paramName] = $paramValue;
             }
         }
