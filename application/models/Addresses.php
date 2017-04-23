@@ -27,4 +27,13 @@ class Addresses
 
         return $addressesTable->add($data);
     }
+
+    public function update($id, array $data)
+    {
+        $config = Application::getConfig();
+        $pdoAdapter = new MysqlAdapter($config['database']);
+        $addressesTable = new DbAddresses($pdoAdapter);
+
+        return $addressesTable->update($id, $data);
+    }
 }

@@ -8,6 +8,9 @@ class Addresses
 {
     private $_adapter;
 
+    private $_tableName = 'address';
+    private $_keyField = 'addressid';
+
     public function __construct(MysqlAdapter $dbAdapter)
     {
         $this->_adapter = $dbAdapter;
@@ -33,5 +36,14 @@ class Addresses
         $sql = "INSERT INTO address";
 
         return $this->_adapter->insert($sql, $data);
+    }
+
+    public function update($id, array $data)
+    {
+        return $this->_adapter->update(
+            $this->_tableName,
+            [$this->_keyField => $id],
+            $data
+        );
     }
 }

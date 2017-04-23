@@ -73,4 +73,28 @@ class MysqlAdapter
 
         return $this->_connection->lastInsertId();
     }
+
+    public function update($tableName, array $idFieldValue, array $data)
+    {
+        $this->connect();
+
+        $dataKeys = array_keys($data);
+        $dataValues = array_values($data);
+
+        foreach ($dataKeys as &$dataKey) {
+            $dataKey = $dataKey . ' = ?';
+        }
+        $dataKeys = implode(', ', $dataKeys);
+
+        $whereColumnField = array_keys($idFieldValue)[0];
+        $whereColumnValue = array_values($idFieldValue)[0];
+        $dataValues[] = $whereColumnValue;
+
+        $sql = "UPDATE {$tableName} SET {$dataKeys} WHERE {$whereColumnField} = ?";
+
+        $stmt = $this->_connection->prepare($sql);
+        $stmt->execute($dataValues);
+
+        return $stmt->rowCount();
+    }
 }

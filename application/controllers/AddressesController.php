@@ -30,4 +30,15 @@ class AddressesController extends Controller
 
         return new JsonView($data);
     }
+
+    public function patchAction()
+    {
+        if ($this->_request->isIdSet()) {
+            $addressId = (int) $this->_request->getId();
+            $bodyParams = $this->_request->getBodyParams();
+            $data = ['message' => (new Addresses())->update($addressId, $bodyParams)];
+        }
+
+        return new JsonView($data);
+    }
 }
