@@ -2,17 +2,37 @@
 
 namespace Core\Db;
 
+/**
+ * Class MysqlAdapter
+ * @package Core\Db
+ */
 class MysqlAdapter
 {
+    /**
+     * Stores database config
+     * @var array
+     */
     private $_config;
 
+    /**
+     * Stores PDO instance
+     * @var \PDO
+     */
     private $_connection;
 
+    /**
+     * MysqlAdapter constructor.
+     * @param array $config
+     */
     public function __construct(array $config)
     {
         $this->_config = $config;
     }
 
+    /**
+     * Performs new connection using PDO (if necessary) and returns its instance
+     * @return \PDO
+     */
     public function connect()
     {
         if ($this->_connection === null) {
@@ -23,6 +43,13 @@ class MysqlAdapter
         return $this->_connection;
     }
 
+    /**
+     * Fetches single row from the database
+     *
+     * @param string $sql
+     * @param array $params
+     * @return array
+     */
     public function fetchRow($sql, $params = [])
     {
         $this->connect();
@@ -40,6 +67,13 @@ class MysqlAdapter
         return $result;
     }
 
+    /**
+     * Fetches all rows from the database
+     *
+     * @param string $sql
+     * @param array $params
+     * @return array
+     */
     public function fetchAll($sql, $params = [])
     {
         $this->connect();
@@ -56,6 +90,13 @@ class MysqlAdapter
         return $result;
     }
 
+    /**
+     * Performs insert of the new record into database
+     *
+     * @param string $sql
+     * @param array $data
+     * @return int
+     */
     public function insert($sql, array $data = [])
     {
         $this->connect();
@@ -74,6 +115,14 @@ class MysqlAdapter
         return $this->_connection->lastInsertId();
     }
 
+    /**
+     * Updates record in the database
+     *
+     * @param string $tableName
+     * @param array $idFieldValue
+     * @param array $data
+     * @return int
+     */
     public function update($tableName, array $idFieldValue, array $data)
     {
         $this->connect();
@@ -98,7 +147,14 @@ class MysqlAdapter
         return $stmt->rowCount();
     }
 
-    public function delete($tableName, $idFieldValue)
+    /**
+     * Removes record from the database
+     *
+     * @param string $tableName
+     * @param array $idFieldValue
+     * @return int
+     */
+    public function delete($tableName, array $idFieldValue)
     {
         $this->connect();
 

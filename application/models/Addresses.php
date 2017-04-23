@@ -6,10 +6,22 @@ use Core\Application;
 use Core\Db\MysqlAdapter;
 use Application\Models\DbTable\Addresses as DbAddresses;
 
+/**
+ * Class Addresses
+ * @package Application\Models
+ */
 class Addresses
 {
+    /**
+     * Stores primary key fieldname
+     * @var string
+     */
     private $_primaryKey = 'addressid';
 
+    /**
+     * Stores list of all fields (except primary key) and appropriate rules for theirs validation
+     * @var array
+     */
     private $_fields = [
         'label' => [
             'maxlength' => 100
@@ -31,6 +43,13 @@ class Addresses
         ]
     ];
 
+    /**
+     * Retrieves data about all records or some specific record, in case
+     * id of the record was provided
+     *
+     * @param null|int $id
+     * @return array
+     */
     public function get($id = null)
     {
         $config = Application::getConfig();
@@ -42,6 +61,12 @@ class Addresses
             : $addressesTable->getAddress($id);
     }
 
+    /**
+     * Performs adding of new item
+     *
+     * @param array $data
+     * @return int
+     */
     public function add(array $data)
     {
         $config = Application::getConfig();
@@ -51,6 +76,13 @@ class Addresses
         return $addressesTable->add($data);
     }
 
+    /**
+     * Updates record by provided id
+     *
+     * @param int $id
+     * @param array $data
+     * @return int
+     */
     public function update($id, array $data)
     {
         $config = Application::getConfig();
@@ -60,6 +92,12 @@ class Addresses
         return $addressesTable->update($id, $data);
     }
 
+    /**
+     * Removes record by provided id
+     *
+     * @param int $id
+     * @return int
+     */
     public function delete($id)
     {
         $config = Application::getConfig();
@@ -68,7 +106,14 @@ class Addresses
 
         return $addressesTable->delete($id);
     }
-    
+
+    /**
+     * Performs validation of provided data
+     *
+     * @param array $data
+     * @param bool $isForCreate
+     * @return bool
+     */
     public function validate(array $data, $isForCreate = false)
     {
         $isValid = true;
@@ -105,6 +150,10 @@ class Addresses
         return $isValid;
     }
 
+    /**
+     * Gets list of fields
+     * @return array
+     */
     public function getFields()
     {
         return $this->_fields;

@@ -6,8 +6,16 @@ use Application\Models\Addresses;
 use Core\Controller;
 use Core\JsonView;
 
+/**
+ * Class AddressesController
+ * @package Application\Controllers
+ */
 class AddressesController extends Controller
 {
+    /**
+     * Handles 'GET' requests for retrieving data
+     * @return JsonView
+     */
     public function getAction()
     {
         $model = new Addresses();
@@ -29,6 +37,12 @@ class AddressesController extends Controller
         return $view;
     }
 
+    /**
+     * Handles 'POST' requests for posting data
+     * (used to create new items)
+     *
+     * @return JsonView
+     */
     public function postAction()
     {
         $bodyParams = $this->_request->getBodyParams();
@@ -75,6 +89,10 @@ class AddressesController extends Controller
         return $view;
     }
 
+    /**
+     * Handles 'PATCH' requests for updating data of some item
+     * @return JsonView
+     */
     public function patchAction()
     {
         $isValidRequest = true;
@@ -120,6 +138,10 @@ class AddressesController extends Controller
         return $view;
     }
 
+    /**
+     * Handles 'DELETE' requests for removing certain item
+     * @return JsonView
+     */
     public function deleteAction()
     {
         $isValidRequest = true;
