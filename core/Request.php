@@ -28,9 +28,7 @@ class Request
             $this->_id = $urlParts[2];
         }
 
-        if (in_array($this->_action, ['post', 'patch']) && $this->_isJsonInput()) {
-            $this->_parseBodyParams();
-        }
+        $this->_parseBodyParams();
     }
 
     /**
@@ -42,6 +40,9 @@ class Request
 
         $body = file_get_contents('php://input');
         $bodyParams = json_decode($body);
+
+        $this->_isJson = json_last_error() === JSON_ERROR_NONE;
+
         if ($bodyParams) {
             foreach ($bodyParams as $paramName => $paramValue) {
                 $paramName = strtolower($paramName);
@@ -50,13 +51,6 @@ class Request
         }
 
         $this->_bodyParams = $params;
-    }
-
-    private function _isJsonInput()
-    {
-        $this->_isJson = strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false;
-
-        return $this->_isJson;
     }
 
     public function getController()
