@@ -55,4 +55,22 @@ class MysqlAdapter
 
         return $result;
     }
+
+    public function insert($sql, array $data = [])
+    {
+        $this->connect();
+
+        $dataKeys = array_keys($data);
+        $dataValues = array_values($data);
+
+        $columns = implode(', ', $dataKeys);
+        $valuesCount = str_repeat('?, ', count($dataValues) - 1) . '?';
+
+        $sql .= " ({$columns}) VALUES ({$valuesCount})";
+
+        $stmt = $this->_connection->prepare($sql);
+        $stmt->execute($dataValues);
+
+        return $this->_connection->lastInsertId();
+    }
 }

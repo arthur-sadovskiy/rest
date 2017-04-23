@@ -27,4 +27,11 @@ class Addresses
 
         return $this->_adapter->fetchAll($sql);
     }
+
+    public function add(array $data)
+    {
+        $sql = "INSERT INTO address";
+
+        return $this->_adapter->insert($sql, $data);
+    }
 }

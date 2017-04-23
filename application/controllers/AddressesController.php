@@ -25,6 +25,9 @@ class AddressesController extends Controller
 
     public function postAction()
     {
-        // TODO
+        $bodyParams = $this->_request->getBodyParams();
+        $data = ['message' => (new Addresses())->add($bodyParams)];
+
+        return new JsonView($data);
     }
 }
