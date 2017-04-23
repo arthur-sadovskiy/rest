@@ -14,13 +14,19 @@ class AddressesController extends Controller
         if ($this->_request->isIdSet()) {
             // retrieve single record
             $addressId = (int) $this->_request->getId();
-            $data = ['message' => $model->get($addressId)];
+            $result = $model->get($addressId);
+
         } else {
             // retrieve all records
-            $data = ['message' => $model->get()];
+            $result = $model->get();
         }
 
-        return new JsonView($data);
+        $view = new JsonView($result);
+        if (empty($result) && isset($addressId)) {
+            $view->setIsNotFound(true);
+        }
+
+        return $view;
     }
 
     public function postAction()

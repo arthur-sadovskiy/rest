@@ -6,6 +6,8 @@ class JsonView
 {
     private $_data = [];
 
+    private $_isNotFound = false;
+
     public function __construct(array $data)
     {
         $this->_data = $data;
@@ -13,7 +15,18 @@ class JsonView
 
     public function render()
     {
-        header('Content-type: application/json');
-        echo json_encode($this->_data);
+        if ($this->_isNotFound) {
+            header('HTTP/1.1 404 Not Found');
+        }
+
+        if (!empty($this->_data)) {
+            header('Content-type: application/json');
+            echo json_encode($this->_data);
+        }
+    }
+
+    public function setIsNotFound($isNotFound)
+    {
+        $this->_isNotFound = $isNotFound;
     }
 }
