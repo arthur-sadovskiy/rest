@@ -97,4 +97,18 @@ class MysqlAdapter
 
         return $stmt->rowCount();
     }
+
+    public function delete($tableName, $idFieldValue)
+    {
+        $this->connect();
+
+        $whereColumnField = array_keys($idFieldValue)[0];
+        $whereColumnValue = array_values($idFieldValue);
+
+        $sql = "DELETE FROM {$tableName} WHERE {$whereColumnField} = ?";
+        $stmt = $this->_connection->prepare($sql);
+        $stmt->execute($whereColumnValue);
+
+        return $stmt->rowCount();
+    }
 }

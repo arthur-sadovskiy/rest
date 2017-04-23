@@ -36,4 +36,13 @@ class Addresses
 
         return $addressesTable->update($id, $data);
     }
+
+    public function delete($id)
+    {
+        $config = Application::getConfig();
+        $pdoAdapter = new MysqlAdapter($config['database']);
+        $addressesTable = new DbAddresses($pdoAdapter);
+
+        return $addressesTable->delete($id);
+    }
 }

@@ -46,4 +46,12 @@ class Addresses
             $data
         );
     }
+
+    public function delete($id)
+    {
+        return $this->_adapter->delete(
+            $this->_tableName,
+            [$this->_keyField => $id]
+        );
+    }
 }

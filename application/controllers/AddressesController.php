@@ -41,4 +41,14 @@ class AddressesController extends Controller
 
         return new JsonView($data);
     }
+
+    public function deleteAction()
+    {
+        if ($this->_request->isIdSet()) {
+            $addressId = (int) $this->_request->getId();
+            $data = ['message' => (new Addresses())->delete($addressId)];
+        }
+
+        return new JsonView($data);
+    }
 }
