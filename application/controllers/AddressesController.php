@@ -89,7 +89,11 @@ class AddressesController extends Controller
             $isValidInput = $model->validate($bodyParams, $isForCreate = false);
             if ($isValidInput) {
                 $result = [];
-                $model->update($addressId, $bodyParams);
+                $isUpdated = $model->update($addressId, $bodyParams);
+                if (!$isUpdated) {
+                    $isValidInput = false;
+                    $result = ['error' => 'Wrong AddressId was provided for record update in url'];
+                }
 
             } else {
                 $fields = $model->getFields();
