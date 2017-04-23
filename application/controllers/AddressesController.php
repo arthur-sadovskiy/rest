@@ -23,7 +23,7 @@ class AddressesController extends Controller
         if ($this->_request->isIdSet()) {
             // retrieve single record
             $addressId = $this->_request->getId();
-            if (!is_int($addressId)) {
+            if (!is_numeric($addressId)) {
                 $isValidRequest = false;
                 $result = ['error' => 'AddressId must be an integer'];
             } else {
@@ -117,7 +117,7 @@ class AddressesController extends Controller
             $result = ['error' => 'Attempt to update address with empty body'];
         } else {
             $addressId = $this->_request->getId();
-            if (!is_int($addressId)) {
+            if (!is_numeric($addressId)) {
                 $isValidRequest = false;
                 $result = ['error' => 'AddressId must be an integer'];
             } else {
@@ -163,7 +163,7 @@ class AddressesController extends Controller
             $result = ['error' => 'AddressId must be provided for record delete in url'];
         } else {
             $addressId = $this->_request->getId();
-            if (!is_int($addressId)) {
+            if (!is_numeric($addressId)) {
                 $isValidRequest = false;
                 $result = ['error' => 'AddressId must be an integer'];
             } else {
