@@ -36,7 +36,8 @@ class AddressesController extends Controller
             $model = new Addresses();
             $isValidInput = $model->validate($bodyParams, $forCreate = true);
             if ($isValidInput) {
-                $result = ['message' => $model->add($bodyParams)];
+                $result = [];
+                $addressId = $model->add($bodyParams);
 
             } else {
                 $fields = $model->getFields();
@@ -56,6 +57,12 @@ class AddressesController extends Controller
         $view = new JsonView($result);
         if (empty($bodyParams) || !$isValidInput) {
             $view->setIsBadRequest(true);
+
+        } elseif (isset($addressId)) {
+            $view->setIsCreated(true);
+
+            $newLocation = "/{$this->_request->getController()}/$addressId";
+            $view->setLocation($newLocation);
         }
         return $view;
     }

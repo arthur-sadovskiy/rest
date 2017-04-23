@@ -10,6 +10,10 @@ class JsonView
 
     private $_isBadRequest = false;
 
+    private $_isCreated = false;
+
+    private $_location = '';
+
     public function __construct(array $data)
     {
         $this->_data = $data;
@@ -21,6 +25,9 @@ class JsonView
             header('HTTP/1.1 404 Not Found');
         } elseif ($this->_isBadRequest) {
             header('HTTP/1.1 400 Bad Request');
+        } elseif ($this->_isCreated && !empty($this->_location)) {
+            header('HTTP/1.1 201 Created');
+            header('Location: ' . $this->_location);
         }
 
         if (!empty($this->_data)) {
@@ -37,5 +44,15 @@ class JsonView
     public function setIsBadRequest($isBadRequest)
     {
         $this->_isBadRequest = $isBadRequest;
+    }
+
+    public function setIsCreated($isCreated)
+    {
+        $this->_isCreated = $isCreated;
+    }
+
+    public function setLocation($location)
+    {
+        $this->_location = $location;
     }
 }
