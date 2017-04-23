@@ -32,9 +32,14 @@ class AddressesController extends Controller
     public function postAction()
     {
         $bodyParams = $this->_request->getBodyParams();
-        if (!empty($bodyParams)) {
+
+        if ($this->_request->isIdSet()) {
+            $isValidInput = false;
+            $result = ['error' => 'Method PATCH must be used for record update'];
+
+        } elseif (!empty($bodyParams)) {
             $model = new Addresses();
-            $isValidInput = $model->validate($bodyParams, $forCreate = true);
+            $isValidInput = $model->validate($bodyParams, $isForCreate = true);
             if ($isValidInput) {
                 $result = [];
                 $addressId = $model->add($bodyParams);
@@ -69,13 +74,40 @@ class AddressesController extends Controller
 
     public function patchAction()
     {
-        if ($this->_request->isIdSet()) {
+        $isValidRequest = true;
+        $bodyParams = $this->_request->getBodyParams();
+
+        if (!$this->_request->isIdSet()) {
+            $isValidRequest = false;
+            $result = ['error' => 'AddressId must be provided for record update in url'];
+        } elseif (empty($bodyParams)) {
+            $isValidRequest = false;
+            $result = ['error' => 'Attempt to update address with empty body'];
+        } else {
             $addressId = (int) $this->_request->getId();
-            $bodyParams = $this->_request->getBodyParams();
-            $data = ['message' => (new Addresses())->update($addressId, $bodyParams)];
+            $model = new Addresses();
+            $isValidInput = $model->validate($bodyParams, $isForCreate = false);
+            if ($isValidInput) {
+                $result = [];
+                $model->update($addressId, $bodyParams);
+
+            } else {
+                $fields = $model->getFields();
+                $requiredFields = [];
+                foreach ($fields as $fieldName => $fieldRules) {
+                    $maxLength = $fieldRules['maxlength'];
+                    $requiredFields[] = "$fieldName (maxlength: $maxLength)";
+                }
+                $requiredFields = implode(', ', $requiredFields);
+                $result = ['error' => 'List of possible fields of address available for update: ' . $requiredFields];
+            }
         }
 
-        return new JsonView($data);
+        $view = new JsonView($result);
+        if (!$isValidRequest || !$isValidInput) {
+            $view->setIsBadRequest(true);
+        }
+        return $view;
     }
 
     public function deleteAction()

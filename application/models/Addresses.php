@@ -73,7 +73,7 @@ class Addresses
     {
         $isValid = true;
 
-        if (isset($data[$this->_primaryKey]) && $isForCreate) {
+        if (isset($data[$this->_primaryKey])) {
             $isValid = false;
 
         } else {
@@ -81,12 +81,18 @@ class Addresses
 
             foreach ($requiredFields as $fieldName => $fieldRules) {
                 // make sure that all required fields are present
-                if (!isset($data[$fieldName])) {
+                if ($isForCreate && !isset($data[$fieldName])) {
                     $isValid = false;
                     break;
                 }
 
                 // make sure that field length is OK
+                if (!$isForCreate && !isset($data[$fieldName])) {
+                    // not all fields are required for update
+                    // so we can skip it
+                    continue;
+                }
+
                 $currentFieldLength = strlen($data[$fieldName]);
                 $maxFieldLength = $fieldRules['maxlength'];
                 if ($currentFieldLength > $maxFieldLength) {
