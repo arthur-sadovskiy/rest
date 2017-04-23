@@ -19,10 +19,16 @@ class AddressesController extends Controller
     public function getAction()
     {
         $model = new Addresses();
+        $isValidRequest = true;
         if ($this->_request->isIdSet()) {
             // retrieve single record
-            $addressId = (int) $this->_request->getId();
-            $result = $model->get($addressId);
+            $addressId = $this->_request->getId();
+            if (!is_int($addressId)) {
+                $isValidRequest = false;
+                $result = ['error' => 'AddressId must be an integer'];
+            } else {
+                $result = $model->get($addressId);
+            }
 
         } else {
             // retrieve all records
@@ -30,7 +36,9 @@ class AddressesController extends Controller
         }
 
         $view = new JsonView($result);
-        if (empty($result) && isset($addressId)) {
+        if (!$isValidRequest) {
+            $view->setIsBadRequest(true);
+        } elseif (empty($result) && isset($addressId)) {
             $view->setIsNotFound(true);
         }
 
@@ -108,26 +116,31 @@ class AddressesController extends Controller
             $isValidRequest = false;
             $result = ['error' => 'Attempt to update address with empty body'];
         } else {
-            $addressId = (int) $this->_request->getId();
-            $model = new Addresses();
-            $isValidInput = $model->validate($bodyParams, $isForCreate = false);
-            if ($isValidInput) {
-                $result = [];
-                $isUpdated = $model->update($addressId, $bodyParams);
-                if (!$isUpdated) {
-                    $isValidInput = false;
-                    $result = ['error' => 'Wrong AddressId was provided for record update in url'];
-                }
-
+            $addressId = $this->_request->getId();
+            if (!is_int($addressId)) {
+                $isValidRequest = false;
+                $result = ['error' => 'AddressId must be an integer'];
             } else {
-                $fields = $model->getFields();
-                $requiredFields = [];
-                foreach ($fields as $fieldName => $fieldRules) {
-                    $maxLength = $fieldRules['maxlength'];
-                    $requiredFields[] = "$fieldName (maxlength: $maxLength)";
+                $model = new Addresses();
+                $isValidInput = $model->validate($bodyParams, $isForCreate = false);
+                if ($isValidInput) {
+                    $result = [];
+                    $isUpdated = $model->update($addressId, $bodyParams);
+                    if (!$isUpdated) {
+                        $isValidInput = false;
+                        $result = ['error' => 'Wrong AddressId was provided for record update in url'];
+                    }
+
+                } else {
+                    $fields = $model->getFields();
+                    $requiredFields = [];
+                    foreach ($fields as $fieldName => $fieldRules) {
+                        $maxLength = $fieldRules['maxlength'];
+                        $requiredFields[] = "$fieldName (maxlength: $maxLength)";
+                    }
+                    $requiredFields = implode(', ', $requiredFields);
+                    $result = ['error' => 'List of possible fields of address available for update: ' . $requiredFields];
                 }
-                $requiredFields = implode(', ', $requiredFields);
-                $result = ['error' => 'List of possible fields of address available for update: ' . $requiredFields];
             }
         }
 
@@ -149,12 +162,17 @@ class AddressesController extends Controller
             $isValidRequest = false;
             $result = ['error' => 'AddressId must be provided for record delete in url'];
         } else {
-            $addressId = (int) $this->_request->getId();
-            $isDeleted = (new Addresses())->delete($addressId);
-            $result = [];
-            if (!$isDeleted) {
+            $addressId = $this->_request->getId();
+            if (!is_int($addressId)) {
                 $isValidRequest = false;
-                $result = ['error' => 'Wrong AddressId was provided for record delete in url'];
+                $result = ['error' => 'AddressId must be an integer'];
+            } else {
+                $isDeleted = (new Addresses())->delete($addressId);
+                $result = [];
+                if (!$isDeleted) {
+                    $isValidRequest = false;
+                    $result = ['error' => 'Wrong AddressId was provided for record delete in url'];
+                }
             }
         }
 
