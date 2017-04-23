@@ -32,9 +32,32 @@ class AddressesController extends Controller
     public function postAction()
     {
         $bodyParams = $this->_request->getBodyParams();
-        $data = ['message' => (new Addresses())->add($bodyParams)];
+        if (!empty($bodyParams)) {
+            $model = new Addresses();
+            $isValidInput = $model->validate($bodyParams, $forCreate = true);
+            if ($isValidInput) {
+                $result = ['message' => $model->add($bodyParams)];
 
-        return new JsonView($data);
+            } else {
+                $fields = $model->getFields();
+                $requiredFields = [];
+                foreach ($fields as $fieldName => $fieldRules) {
+                    $maxLength = $fieldRules['maxlength'];
+                    $requiredFields[] = "$fieldName (maxlength: $maxLength)";
+                }
+                $requiredFields = implode(', ', $requiredFields);
+                $result = ['error' => 'New address must contain only these fields: ' . $requiredFields];
+            }
+
+        } else {
+            $result = ['error' => 'Attempt to create new address with empty body'];
+        }
+
+        $view = new JsonView($result);
+        if (empty($bodyParams) || !$isValidInput) {
+            $view->setIsBadRequest(true);
+        }
+        return $view;
     }
 
     public function patchAction()
